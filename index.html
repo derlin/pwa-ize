@@ -2,9 +2,10 @@
 <html>
 
 <head>
-    <title>PWAs shortcuts</title>
+    <title>PWA-ize any URL</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="manifest" id="manifest-placeholder">
     <!-- Vue.js -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <!-- Materialize CSS -->
@@ -14,26 +15,11 @@
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Gayathri:wght@400;700&display=swap" rel="stylesheet">
     <style type="text/css">
-        html {
-            background: rgb(254,254,254);
-            background: radial-gradient(circle, rgba(254,254,254,1) 1%, rgba(230,229,229,1) 70%, rgba(249,246,246,1) 100%);
-            font-family: 'Gayathri', sans-serif;
-        }
-
-        .collection {
-            border: none;
-        }
-
-        .collection .collection-item.avatar .title {
-            font-weight: bold;
-            font-size: 1.2em;
-        }
-
-
-        .collection .collection-item.avatar {
-            min-height: 60px;
-            cursor: pointer;
-            margin-bottom: 5pt;
+        pre {
+            overflow: auto;
+            background: #efefef;
+            color: #555;
+            padding: 10px;
         }
     </style>
 </head>
@@ -41,160 +27,121 @@
 <body>
     <div id="app" class="container">
 
-        <!-- Modal Add -->
-        <div id="modal-add" class="modal">
-            <div class="modal-content">
-                <form class="col s12">
+        <!-- URL input -->
+        <ul class="collapsible">
+            <li class="active">
+                <div class="collapsible-header"><i class="material-icons">whatshot</i>Target URL</div>
+                <div class="collapsible-body">
+                    <form class="col s12">
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <input type="url" id="url" v-model="input.url" class="validate">
+                                <label for="url">URL</label>
+                            </div>
 
-                    <div class="row">
-                        <div class="input-field col s12">
-                            <input type="url" id="url" v-model="newLink" class="validate">
-                            <label for="url">URL</label>
+                            <div class="input-field col s12">
+                                <input type="text" id="title" v-model="input.title" class="validate">
+                                <label for="title">Title</label>
+                            </div>
                         </div>
 
-                        <div class="input-field col s12">
-                            <input type="text" id="title" v-model="newLinkName" class="validate">
-                            <label for="title">Title</label>
-                        </div>
-                    </div>
+                        <div v-if="error">Error: {{error}}</div>
+                    </form>
 
-                    <div v-if="error">Error: {{error}}</div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <a href="#!" class="modal-close waves-effect waves-green btn-flat">Cancel</a>
-                <a href="#!" v-on:click="addLink" class="waves-effect waves-green btn-flat">Add</a>
+                    <a v-on:click="generateManifest()" class="waves-effect waves-light btn">Generate manifest</a>
+                </div>
+            </li>
+        </ul>
+
+        <!-- Result -->
+        <div class="card" v-if="generated.manifest">
+            <div class="card-content">
+                <h3>You're done !</h3>
+                <p>You can now install <b>{{generated.title}}</b>
+                    (<a v-bind:href="this.generated.url.href">{{this.generated.url.href}}</a>).</p>
+                <p>Click on <i>add to home screen</i> (Android) and you are all set !</p>
+                <br>
+                <p>The link to this install page is <a v-bind:href="generated.thislink">{{generated.thislink}}</a>.</p>
+                <br>
+                <p>For information, here is the generated manifest:</p>
+                <pre><code>{{generated.manifest}}</code></pre>
             </div>
         </div>
 
-        <!-- Modal About -->
-        <div id="modal-about" class="modal">
-            <div class="modal-content">
-                <h4>About PWAs</h4>
-                <p>This little webiste is intended to easily open links inside self-contained Chrome instances in
-                    Android.</p>
-            </div>
-            <div class="modal-footer">
-                <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
-            </div>
-        </div>
-
-        <!-- List of links -->
-        <h4>PWAs Links</h1>
-            <ul class="collection">
-                <li class="collection-item avatar z-depth-2" v-for="link in links" v-on:click="this.window.location.href = link.url">
-                    <img v-bind:src="favLink(link)" class="circle">
-                    <span class="title">{{link.title}}</span>
-                    <p>{{link.url}}</p>
-                    <a href="#!" class="secondary-content" v-on:click.stop.prevent="removeLink(link)">
-                        <i class="material-icons small red-text">remove_circle_outline</i>
-                    </a>
-                    </a>
-            </ul>
-            <p v-if="!links.length">
-                Use the + button to add links to the homepage.
-            </p>
-
-
-            <!-- FAB -->
-            <div id="fab" class="fixed-action-btn direction-top">
-                <a class="btn-floating btn-large teal">
-                    <i class="large material-icons">mode_edit</i>
-                </a>
-                <ul>
-                    <li><a class="btn-floating blue" v-on:click="modal.about.open()"><i
-                                class="material-icons">info_outline</i></a></li>
-                    <li><a class="btn-floating green" v-on:click="modal.add.open()"><i
-                                class="material-icons">add</i></a>
-                    </li>
-                </ul>
-            </div>
     </div>
 
 
     <script type="text/javascript">
-        // localStorage persistence
-        const STORAGE_KEY = "PWA-links";
-        const linkstorage = {
-            fetch: function () {
-                const links = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
-                linkstorage.uid = links.length;
-                return links;
-            },
-            save: function (links) {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(links));
-            }
-        };
-
+        const params = new URLSearchParams(window.location.search);
         const app = new Vue({
             el: "#app",
 
             data: {
-                links: linkstorage.fetch(),
-                newLink: "",
-                newLinkName: "",
-                error: "",
-                modal: {
-                    add: null,
-                    about: null
-                }
-            },
-
-            // watch links change for localStorage persistence
-            watch: {
-                links: {
-                    handler: function (links) {
-                        linkstorage.save(links);
-                    },
-                    deep: true
-                }
+                input: {
+                    url: params.get('url') || '',
+                    title: params.get('title') || ''
+                },
+                generated: {
+                    url: null,
+                    title: null,
+                    manifest: null, 
+                    thislink: null
+                },
+                manifestHolder: null,
+                error: ""
             },
 
             methods: {
-                addLink: function () {
-                    let url = "";
+
+                generateManifest: function () {
+
                     // ensure the URL is valid
-                    try{
-                        url = new URL(this.newLink);
-                    }catch {
+                    try {
+                        this.generated.url = new URL(this.input.url);
+                    } catch {
                         this.error = 'the provided URL is not a valid URL';
                         return;
                     }
-                    // ensure the URL is unique
-                    if(this.links.filter(function(l){ return l.url == url.href; }).length){
-                        this.error = 'the provided URL is already present';
-                        return;
-                    }
+
+                    this.generated.thislink = window.location.href.split('?')[0] + `?url=${this.generated.url}`;
                     // if no title is set, add default to hostname
-                    if ((this.newLinkName || "").trim().length == 0) {
-                        this.newLinkName = url.hostname;
+                    if ((this.input.title || "").trim().length == 0) {
+                        this.generated.title = this.generated.url.hostname;
+                    } else {
+                        this.generated.title = this.input.title.trim();
+                        this.generated.thislink += `&title=${this.generated.title}`;
                     }
-                    // save the new entry
-                    this.links.push({
-                        url: url.href,
-                        title: this.newLinkName,
-                        domain: url.hostname
-                    });
-                    // clear errors and clsoe modal
-                    this.error = null;
-                    this.modal.add.close();
-                },
 
-                removeLink: function (link) {
-                    this.links.splice(this.links.indexOf(link), 1);
-                },
+                    // create manifest
+                    // https://medium.com/@alshakero/how-to-setup-your-web-app-manifest-dynamically-using-javascript-f7fbee899a61
+                    const self = this;
+                    this.generated.manifest = JSON.stringify({
+                        "background_color": "white",
+                        "description": "PWA-ize any website so it can be opened in a separate Chrome container in Android",
+                        "display": "fullscreen",
+                        "name": `${this.generated.title} PWA`,
+                        "short_name": `${this.generated.title} PWA`,
+                        "start_url": `${window.location.href}/pwa-ize.html?url=${this.generated.url.href}`,
+                        // try as many sizes as possible
+                        "icons": [64,128,192,256,512].map(function(size){ return {
+                            "src": `https://www.google.com/s2/favicons?sz=${size}&domain=${self.generated.url.hostname}`,
+                            "sizes": `${size}x${size}`,
+                            "type": "image/png"
+                        }}),
+                        "start_url": `${window.location.origin}/redirect.html?url=${this.generated.url.href}`
+                    }, null, 2);
 
-                favLink: function (link) {
-                    return `https://www.google.com/s2/favicons?sz=64&domain=${link.domain}`;
+                    const blob = new Blob([this.generated.manifest], { type: 'application/json' });
+                    this.manifestHolder.setAttribute('href', URL.createObjectURL(blob));
+                    this.collapsible.close();
                 }
             },
 
 
             mounted: function () {
-                this.modal.add = M.Modal.init(document.getElementById('modal-add'));
-                this.modal.about = M.Modal.init(document.getElementById('modal-about'));
-                M.FloatingActionButton.init(document.getElementById('fab'), { direction: 'top' });
-                console.log("mounted");
+                this.collapsible = M.Collapsible.init(document.querySelectorAll('.collapsible')[0]);
+                this.manifestHolder = document.getElementById('manifest-placeholder');
+                if(this.input.url) this.generateManifest();
             }
         });
     </script>

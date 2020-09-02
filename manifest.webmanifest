@@ -1,8 +1,0 @@
-{
-    "background_color": "white",
-    "description": "PWA-enabled webapp to open any website inside a separate Chrome container in Android",
-    "display": "fullscreen",
-    "name": "PWA-ize",
-    "short_name": "PWA-ize",
-    "start_url": "/"
-  }
