@@ -115,6 +115,7 @@
                     // create manifest
                     // https://medium.com/@alshakero/how-to-setup-your-web-app-manifest-dynamically-using-javascript-f7fbee899a61
                     const self = this;
+                    const url_base = 
                     this.generated.manifest = JSON.stringify({
                         "background_color": "white",
                         "description": "PWA-ize any website so it can be opened in a separate Chrome container in Android",
@@ -128,7 +129,7 @@
                             "sizes": `${size}x${size}`,
                             "type": "image/png"
                         }}),
-                        "start_url": `${window.location.origin}/redirect.html?url=${this.generated.url.href}`
+                        "start_url": new URL(`redirect.html?url=${this.generated.url.href}`, window.location.href)
                     }, null, 2);
 
                     const blob = new Blob([this.generated.manifest], { type: 'application/json' });
