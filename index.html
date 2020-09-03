@@ -21,11 +21,16 @@
             color: #555;
             padding: 10px;
         }
+        [v-cloak] {
+            display: none;
+        }
     </style>
 </head>
 
 <body>
     <div id="app" class="container">
+
+        <img src="icons/pwa-ize-horizontal.svg" style="height: 52px; margin: 10px">
 
         <!-- URL input -->
         <ul class="collapsible">
@@ -54,7 +59,7 @@
         </ul>
 
         <!-- Result -->
-        <div class="card" v-if="generated.manifest">
+        <div class="card" v-if="generated.manifest" v-cloack>
             <div class="card-content">
                 <h3>You're done !</h3>
                 <p>You can now install <b>{{generated.title}}</b>
