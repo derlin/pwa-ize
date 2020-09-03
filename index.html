@@ -5,6 +5,10 @@
     <title>PWA-ize any URL</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicons -->
+    <link rel="icon" type="image/svg" href="icons/pwa-ize-favicon.svg">
+    <link rel="icon" type="image/png" href="icons/pwa-ize-favicon.png" sizes="16x16">
+    <!-- Manifest -->
     <link rel="manifest" id="manifest-placeholder">
     <!-- Vue.js -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
@@ -24,6 +28,9 @@
         [v-cloak] {
             display: none;
         }
+        .orange {
+            background-color: #fb8c00 !important;
+        }
     </style>
 </head>
 
@@ -35,7 +42,7 @@
         <!-- URL input -->
         <ul class="collapsible">
             <li class="active">
-                <div class="collapsible-header"><i class="material-icons">whatshot</i>Target URL</div>
+                <div class="collapsible-header"><i class="material-icons">my_location</i>Target</div>
                 <div class="collapsible-body">
                     <form class="col s12">
                         <div class="row">
@@ -48,12 +55,11 @@
                                 <input type="text" id="title" v-model="input.title" class="validate">
                                 <label for="title">Title</label>
                             </div>
+                            <p v-if="error"><b>Error:</b> {{error}}</p>
                         </div>
-
-                        <div v-if="error">Error: {{error}}</div>
                     </form>
 
-                    <a v-on:click="generateManifest()" class="waves-effect waves-light btn">Generate manifest</a>
+                    <a v-on:click="generateManifest()" class="waves-effect waves-light btn orange">Generate manifest</a>
                 </div>
             </li>
         </ul>
