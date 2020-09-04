@@ -12,6 +12,8 @@
     <link rel="manifest" id="manifest-placeholder">
     <!-- Vue.js -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- Favicon grabber -->
+    <script src="utils/google-s2.js"></script>
     <!-- Materialize CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
@@ -26,9 +28,11 @@
             color: #555;
             padding: 10px;
         }
+
         [v-cloak] {
             display: none;
         }
+
         .orange {
             background-color: #fb8c00 !important;
         }
@@ -37,19 +41,22 @@
     <!-- Primary Meta Tags -->
     <title>PWA-ize</title>
     <meta name="title" content="PWA-ize">
-    <meta name="description" content="Transform any website into a PWA, so they can be opened into separate Web Containers on mobile phones.">
+    <meta name="description"
+        content="Transform any website into a PWA, so they can be opened into separate Web Containers on mobile phones.">
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://derlin.github.io/pwa-ize/">
     <meta property="og:title" content="PWA-ize">
-    <meta property="og:description" content="Transform any website into a PWA, so they can be opened into separate Web Containers on mobile phones.">
+    <meta property="og:description"
+        content="Transform any website into a PWA, so they can be opened into separate Web Containers on mobile phones.">
     <meta property="og:image" content="https://derlin.github.io/pwa-ize/icons/pwa-ize-share.png">
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://derlin.github.io/pwa-ize/">
     <meta property="twitter:title" content="PWA-ize">
-    <meta property="twitter:description" content="Transform any website into a PWA, so they can be opened into separate Web Containers on mobile phones.">
-    <meta property="twitter:image" content="https://derlin.github.io/pwa-ize/icons/pwa-ize-share.png">
+    <meta property="twitter:description"
+        content="Transform any website into a PWA, so they can be opened into separate Web Containers on mobile phones.">
+    <meta property="twitter:image" content="https://derlin.github.io/pwa-ize/icons/">
 </head>
 
 <body>
@@ -83,7 +90,7 @@
         </ul>
 
         <!-- Result -->
-        <div class="card" v-if="generated.manifest" v-cloack>
+        <div class="card" v-if="generated.manifest" v-cloak>
             <div class="card-content">
                 <h3>You're done !</h3>
                 <p>You can now install <b>{{generated.title}}</b>
@@ -113,7 +120,7 @@
                 generated: {
                     url: null,
                     title: null,
-                    manifest: null, 
+                    manifest: null,
                     thislink: null
                 },
                 manifestHolder: null,
@@ -144,26 +151,24 @@
                     // create manifest
                     // https://medium.com/@alshakero/how-to-setup-your-web-app-manifest-dynamically-using-javascript-f7fbee899a61
                     const self = this;
-                    const url_base = 
-                    this.generated.manifest = JSON.stringify({
-                        "background_color": "white",
-                        "description": "PWA-ize any website so it can be opened in a separate Chrome container in Android",
-                        "display": "fullscreen",
-                        "name": `${this.generated.title} PWA`,
-                        "short_name": `${this.generated.title} PWA`,
-                        "start_url": `${window.location.href}/pwa-ize.html?url=${this.generated.url.href}`,
-                        // try as many sizes as possible
-                        "icons": [64,128,192,256,512].map(function(size){ return {
-                            "src": `https://www.google.com/s2/favicons?sz=${size}&domain=${self.generated.url.hostname}`,
-                            "sizes": `${size}x${size}`,
-                            "type": "image/png"
-                        }}),
-                        "start_url": new URL(`redirect.html?url=${this.generated.url.href}`, window.location.href)
-                    }, null, 2);
+                    GoogleS2.grab(this.generated.url.hostname).then(function (icons) {
 
-                    const blob = new Blob([this.generated.manifest], { type: 'application/json' });
-                    this.manifestHolder.setAttribute('href', URL.createObjectURL(blob));
-                    this.collapsible.close();
+                        self.generated.manifest = JSON.stringify({
+                            "background_color": "white",
+                            "description": "PWA-ize any website so it can be opened in a separate Chrome container in Android",
+                            "display": "fullscreen",
+                            "name": `${self.generated.title} PWA`,
+                            "short_name": `${self.generated.title} PWA`,
+                            "start_url": `${window.location.href}/pwa-ize.html?url=${self.generated.url.href}`,
+                            // try as many sizes as possible
+                            "icons": icons,
+                            "start_url": new URL(`redirect.html?url=${self.generated.url.href}`, window.location.href)
+                        }, null, 2);
+
+                        const blob = new Blob([self.generated.manifest], { type: 'application/json' });
+                        self.manifestHolder.setAttribute('href', URL.createObjectURL(blob));
+                        self.collapsible.close();
+                    });
                 }
             },
 
@@ -171,7 +176,7 @@
             mounted: function () {
                 this.collapsible = M.Collapsible.init(document.querySelectorAll('.collapsible')[0]);
                 this.manifestHolder = document.getElementById('manifest-placeholder');
-                if(this.input.url) this.generateManifest();
+                if (this.input.url) this.generateManifest();
             }
         });
     </script>
