@@ -3,7 +3,7 @@
  * This library will automatically discover the size of the images, in case this attribute is not present in the favicongrabber response.
  * 
  * Usage: 
- * ```
+ * ```javascript
  * FaviconGrabber
  *      .grab(new URL('https://example.com/lala').hostname)
  *      .then(function(favicons){ 
