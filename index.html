@@ -36,6 +36,13 @@
         .orange {
             background-color: #fb8c00 !important;
         }
+
+        #open-modal i {
+            font-size: 1.5em;
+            float: right;
+            margin-top: 10px;
+            color: #616161;
+        }
     </style>
 
     <!-- Primary Meta Tags -->
@@ -62,6 +69,7 @@
 <body>
     <div id="app" class="container">
 
+        <a id="open-modal" class="modal-trigger" href="#modal-about"><i class="material-icons">info</i></a>
         <img src="icons/pwa-ize-horizontal.svg" style="height: 52px; margin: 10px">
 
         <!-- URL input -->
@@ -101,6 +109,28 @@
                 <br>
                 <p>For information, here is the generated manifest:</p>
                 <pre><code>{{generated.manifest}}</code></pre>
+            </div>
+        </div>
+
+        <!-- Modal About -->
+        <div id="modal-about" class="modal">
+            <div class="modal-content">
+                <!-- <h4>About PWAs</h4> -->
+                <p>
+                    This little webiste is intended to easily open non-PWA websites inside self-contained Chrome
+                    instances in Android.
+                </p>
+                <p>
+                    You can either install a particular website using this page, or use the
+                    <a href="shortcuts.html">Shortcuts Page</a> and use it as the main PWA entrypoint.
+                </p>
+                <p>
+                    For more information, have a look at the <a href="https://github.com/derlin/pwa-ize"
+                        target="_blank">code</a> !
+                </p>
+            </div>
+            <div class="modal-footer">
+                <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
             </div>
         </div>
 
@@ -174,6 +204,7 @@
 
 
             mounted: function () {
+                M.Modal.init(document.getElementById('modal-about'));
                 this.collapsible = M.Collapsible.init(document.querySelectorAll('.collapsible')[0]);
                 this.manifestHolder = document.getElementById('manifest-placeholder');
                 if (this.input.url) this.generateManifest();
