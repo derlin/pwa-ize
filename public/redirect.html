@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>PWA-ize redirect</title>
+  </head>
+
+  <body>
+    <div id="message"></div>
+    <script type="text/javascript">
+      // simply redirect to the given URL
+      const params = new URLSearchParams(window.location.search)
+      try {
+        window.location.href = new URL(params.get("url")).href
+      } catch (error) {
+        document.addEventListener("DOMContentLoaded", function () {
+          document.getElementById(
+            "message"
+          ).innerHTML = `An error occurred ${error}. The url option is empty or invalid ${window.location.href}`
+        })
+      }
+    </script>
+  </body>
+</html>

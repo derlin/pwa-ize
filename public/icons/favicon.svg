@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xl="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 96 96" width="8pc" height="8pc" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <metadata> Produced by OmniGraffle 7.2.2 
+    <dc:date>2021-10-25 17:10:00 +0000</dc:date>
+  </metadata>
+  <defs/>
+  <g stroke="none" stroke-opacity="1" stroke-dasharray="none" fill="none" fill-opacity="1">
+    <title>favicons</title>
+    <g>
+      <title>favicon svg</title>
+      <circle cx="48" cy="48" r="48.000077" fill="#171d32"/>
+      <path d="M 67.02222 18 L 67.02222 29.75 L 42.666667 66.66667 L 42.666667 66.83333 L 48.97778 66.41667 L 68 66.41667 L 68 78 L 28 78 L 28 66.33333 L 52.266667 29.416667 L 52.266667 29.25 L 45.77778 29.583333 L 28.71111 29.583333 L 28.71111 18 Z" fill="#66d1fb"/>
+      <path d="M 67.02222 18 L 67.02222 29.75 L 42.666667 66.66667 L 42.666667 66.83333 L 48.97778 66.41667 L 68 66.41667 L 68 78 L 28 78 L 28 66.33333 L 52.266667 29.416667 L 52.266667 29.25 L 45.77778 29.583333 L 28.71111 29.583333 L 28.71111 18 Z" stroke="white" stroke-linecap="butt" stroke-linejoin="miter" stroke-width="2"/>
+    </g>
+  </g>
+</svg>

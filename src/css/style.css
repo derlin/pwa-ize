@@ -1,0 +1,90 @@
+html {
+  /* colors inspiration => https://animxyz.com/docs/ */
+  --bg-page: #171d32;
+  --bg-main: #111528;
+  --text: #b0bee4;
+  --text-secondary: #7e8dc0;
+  --accent: #66d1fb;
+  --border: #3f4b76;
+
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding-top: 20px;
+}
+
+html.light {
+  /* colors inspiration => https://animxyz.com/docs/ */
+  --bg-page: #efefef;
+  --bg-main: white;
+  --text: #333;
+  --text-secondary: #555;
+  --accent: #66d1fb;
+  --border: #ddd;
+}
+
+/* === override colors */
+
+html,
+html .modal {
+  background-color: var(--bg-page);
+}
+
+body,
+input {
+  color: var(--text);
+}
+
+body .input-field input,
+body .input-field label {
+  color: var(--text);
+  border-bottom-color: var(--text) !important;
+}
+
+.card,
+.collapsible,
+.collapsible-header,
+.collapsible-body,
+.collection,
+.collection-item,
+.modal .modal-footer {
+  background: var(--bg-main) !important;
+  border-color: var(--border);
+}
+
+.accent-text,
+.modal .btn-flat {
+  color: var(--accent);
+}
+
+.accent {
+  background-color: var(--accent) !important;
+  color: black;
+}
+
+pre {
+  overflow: auto;
+  background: var(--bg-page);
+  padding: 10px;
+}
+
+hr {
+  border-color: var(--text-secondary);
+}
+
+[v-cloak] {
+  display: none;
+}
+
+/* try to avoid scroll in modal */
+.modal {
+  max-height: 100%;
+}
+
+/* For removing autocomplete highlight color in chrome (note: use this at bottom of your css file). */
+input:-webkit-autofill,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px var(--bg-main) inset !important;
+  -webkit-text-fill-color: var(--text) !important;
+}
