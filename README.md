@@ -1,8 +1,10 @@
 # PWA-ize
 
+
 Transform any website into a PWA that feels like a regular mobile application.
 
 **➙ https://derlin.github.io/pwa-ize ✨**
+
 
 ## What is it ?
 
@@ -12,6 +14,42 @@ the shortcut will open in a standalone browser instance, instead of launching th
 
 Under the hood, what PWA-ize does is generate a manifest with the target website icon and a `start_url` that will automatically
 redirect to the target site. This is fairly simple and works well.
+
+## Demo
+
+**Usage**
+
+Here is a comparison of how [dev.to](https://dev.to) behaves when added to home screen with and without PWA-ize.
+
+<details>
+  <summary>Demo without PWA</summary>
+  <br />
+  <img src="https://user-images.githubusercontent.com/5463445/138928901-e3c6575c-cecd-4a81-ad77-31364bd2561c.gif" alt="regular app" />
+</details>
+
+<details>
+  <summary>Demo with PWA-ized app</summary>
+  <br />
+  <img src="https://user-images.githubusercontent.com/5463445/138928877-339b3ca5-2b8e-423b-875c-d6ad165f5bd7.gif" alt="PWA-ized app" />
+</details>
+
+**Full install**
+
+Here are the full gifs with also the install phase. Note that the PWA-ize install is quite long: this is due to the fetching of icons from GoogleS2 and processing the manifest, not from this code 😉. This is only once on install though.
+
+<details>
+  <summary>Full install without PWA</summary>
+  <br />
+  <img src="https://user-images.githubusercontent.com/5463445/138927804-ff461e90-1d3a-4121-96b0-c6c2690b405c.gif" alt="regular app" />
+</details>
+
+<details>
+  <summary>Full install with PWA-ize</summary>
+  <br />
+  <img src="https://user-images.githubusercontent.com/5463445/138927653-ce5a3cf7-333d-4b7a-bfcf-0d4084d7ec48.gif" alt="PWA-ized app" />
+</details>
+
+
 
 ## Why this project ?
 
@@ -33,11 +71,16 @@ checking the canteen's menu, and do my tech readings.
 
 ## About PWAs and PWA-ize
 
-The only requirement for a website to be a _Progressive Web App_ is to reference a valid manifest file (`<meta name="manifest" src="...">`).
-The manifest itself should have a name, a start URL, a `display` property different from `browser` and a bunch of icons.
-What PWA-ize does is to generate a valid manifest on the fly with a target website Icon (grabbed from Google S2,
+The only requirements for a website to open in a dedicated browser window when added to the home screen are for the page to:
+
+1. reference a valid [Web Manifest](https://developer.mozilla.org/en-US/docs/Web/Manifest) (`<meta name="manifest" src="...">`),
+2. have the `display` property in the manifest set to something different from `browser`.
+
+PWA-ize generates this valid manifest for a target URL you give, adding also some icons (grabbed from Google S2,
 e.g. https://www.google.com/s2/favicons?sz=64&domain_url=yahoo.com).
-Since the start URL must be in the same domain, it sets it to `redirect.html?url=target-site`, which will automatically redirect on load.
+Since a manifest cannot set a `start_url` outside of the domain of the current page, it is set to `redirect.html?url=target-site`,
+which will automatically do a redirect on load.
+
 That's it.
 
 <div align="center">
